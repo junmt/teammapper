@@ -339,9 +339,12 @@ export default class Draw {
         // Allow only some shortcuts.
         name.onkeydown = (event) => {
             // Unfocus the node.
-            if (event.code === 'Escape') {
+            if (event.code === 'Escape' || (event.code === 'Enter' && !event.shiftKey && !event.isComposing)) {
                 Utils.removeAllRanges()
                 name.blur()
+                //このままだと、Enterキーで新しいノードが追加されてしまうため、イベントを停止する。
+                event.preventDefault();
+                event.stopPropagation();
             }
 
             if (event.ctrlKey || event.metaKey) {

@@ -79,14 +79,21 @@ export class ShortcutsService implements OnDestroy {
 
     const editHotkeys = [
       {
-        keys: '+',
+        keys: ['+', 'tab'],
         description: 'TOOLTIPS.ADD_NODE',
         callback: () => {
           this.mmpService.addNode();
         },
       },
       {
-        keys: ['-', 'backspace'],
+        keys: 'enter',
+        description: 'TOOLTIPS.ADD_SAME_LEVEL_NODE',
+        callback: () => {
+          this.mmpService.addNodeSameLevel();
+        },
+      },
+      {
+        keys: ['-', 'backspace', 'del'],
         description: 'TOOLTIPS.REMOVE_NODE',
         callback: () => {
           this.mmpService.removeNode();
@@ -142,7 +149,7 @@ export class ShortcutsService implements OnDestroy {
         },
       },
       {
-        keys: 'enter',
+        keys: 'enter+shift',
         description: 'TOOLTIPS.START_EDIT_NODE',
         callback: () => {
           this.mmpService.editNode();

@@ -225,6 +225,54 @@ export class MmpService implements OnDestroy {
   }
 
   /**
+   * Adds an already created node on the server
+   *
+   * @param properties Given node properties as synced from the server
+   */
+  public addNodeSameLevel(properties?: UserNodeProperties, notifyWithEvent = true) {
+    const newProps: UserNodeProperties = properties || { name: '' };
+    const currentNode = this.selectNode();
+    const parent = !properties?.detached ? this.currentMap.instance.selectNode(currentNode.parent) : null;
+
+    // detached nodes are not available as parent
+    if (this.selectNode()?.detached) {
+      return;
+    }
+
+    const settings = this.settingsService.getCachedSettings();
+
+    if (properties?.colors?.branch) {
+      newProps.colors = {
+        branch: properties.colors.branch,
+      };
+    } else if (parent?.colors?.branch) {
+      newProps.colors = {
+        branch: parent.colors.branch,
+      };
+    } else if (
+      settings !== null &&
+      settings.mapOptions !== null &&
+      settings.mapOptions.autoBranchColors === true
+    ) {
+      const children = this.nodeChildren().length;
+
+      newProps.colors = {
+        branch: this.branchColors[children % this.branchColors.length],
+      };
+    }
+
+    if (properties?.detached) {
+      const currentNode = this.selectNode();
+      newProps.coordinates = {
+        x: currentNode.coordinates.x,
+        y: currentNode.coordinates.y,
+      };
+    }
+
+    this.currentMap.instance.addNode(newProps, notifyWithEvent);
+  }
+
+  /**
    * Select the node with the id or in the direction passed as parameter.
    * If the node id is not defined return the current selected node.
    */
