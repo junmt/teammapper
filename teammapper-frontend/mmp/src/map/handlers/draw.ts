@@ -153,7 +153,7 @@ export default class Draw {
         const name = node.getNameDOM(),
             path = d3.path()
 
-        node.dimensions.width = name.clientWidth + 45
+        node.dimensions.width = name.clientWidth + 30
         node.dimensions.height = name.clientHeight + 30
 
         const x = node.dimensions.width / 2,
@@ -161,10 +161,10 @@ export default class Draw {
             k = node.k
 
         path.moveTo(-x, k / 3)
-        path.bezierCurveTo(-x, -y + 10, -x + 10, -y, k, -y)
-        path.bezierCurveTo(x - 10, -y, x, -y + 10, x, k / 3)
-        path.bezierCurveTo(x, y - 10, x - 10, y, k, y)
-        path.bezierCurveTo(-x + 10, y, -x, y - 10, -x, k / 3)
+        path.bezierCurveTo(-x, -y, -x, -y, k, -y)
+        path.bezierCurveTo(x, -y, x, -y, x, k / 3)
+        path.bezierCurveTo(x, y, x, y, k, y)
+        path.bezierCurveTo(-x, y, -x, y, -x, k / 3)
         path.closePath()
 
         return path
@@ -181,7 +181,7 @@ export default class Draw {
         const parent = node.parent,
             path = d3.path(),
             level = node.getLevel(),
-            width = 22 - (level < 6 ? level : 6) * 3,
+            width = 1 - (level < 6 ? level : 6) * 3,
             mx = (parent.coordinates.x + node.coordinates.x) / 2,
             ory = parent.coordinates.y < node.coordinates.y + node.dimensions.height / 2 ? -1 : 1,
             orx = parent.coordinates.x > node.coordinates.x ? -1 : 1,
@@ -191,7 +191,7 @@ export default class Draw {
         path.bezierCurveTo(
             mx - width * inv, parent.coordinates.y - width / 2,
             parent.coordinates.x - width / 2 * inv, node.coordinates.y + node.dimensions.height / 2 - width / 3,
-            node.coordinates.x - node.dimensions.width / 3 * orx, node.coordinates.y + node.dimensions.height / 2 + 3
+            node.coordinates.x - node.dimensions.width / 3 * orx, node.coordinates.y + node.dimensions.height / 64 + 3
         )
         path.bezierCurveTo(
             parent.coordinates.x + width / 2 * inv, node.coordinates.y + node.dimensions.height / 2 + width / 3,
@@ -339,12 +339,9 @@ export default class Draw {
         // Allow only some shortcuts.
         name.onkeydown = (event) => {
             // Unfocus the node.
-            if (event.code === 'Escape' || (event.code === 'Enter' && !event.shiftKey && !event.isComposing)) {
+            if (event.code === 'Escape') {
                 Utils.removeAllRanges()
                 name.blur()
-                //このままだと、Enterキーで新しいノードが追加されてしまうため、イベントを停止する。
-                event.preventDefault();
-                event.stopPropagation();
             }
 
             if (event.ctrlKey || event.metaKey) {
