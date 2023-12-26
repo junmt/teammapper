@@ -11,6 +11,7 @@ import { StorageService, STORAGE_KEYS } from '../storage/storage.service';
 // Global per user settings service
 export class SettingsService {
   public static readonly LANGUAGES = [
+    'ja',
     'en',
     'fr',
     'de',
